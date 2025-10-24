@@ -37,7 +37,6 @@ public class Case03 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// ケース01
 		//ログイン画面にアクセス
 		goTo("http://localhost:8080/lms");
 		assertEquals("http://localhost:8080/lms/", webDriver.getCurrentUrl());
@@ -50,7 +49,6 @@ public class Case03 {
 	@Order(2)
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
-		// ケース02
 		//初回ログイン済みのユーザ情報を入力後ログイン処理
 		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
 		webDriver.findElement(By.id("password")).sendKeys("StudentAA0101");
