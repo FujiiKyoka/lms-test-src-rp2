@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f02_faq;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
 
 /**
  * 結合テスト よくある質問機能
@@ -35,42 +37,96 @@ public class Case06 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+		//ログイン画面にアクセス
+		goTo("http://localhost:8080/lms");
+		assertEquals("http://localhost:8080/lms/", webDriver.getCurrentUrl());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(2)
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
-		// TODO ここに追加
+		//初回ログイン済みのユーザ情報を入力後ログイン処理
+		webDriver.findElement(By.id("loginId")).sendKeys("StudentAA01");
+		webDriver.findElement(By.id("password")).sendKeys("StudentAA0101");
+		webDriver.findElement(By.cssSelector("input[type='submit']")).click();
+		//コース詳細画面に遷移
+		assertEquals("http://localhost:8080/lms/course/detail", webDriver.getCurrentUrl());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(3)
 	@DisplayName("テスト03 上部メニューの「ヘルプ」リンクからヘルプ画面に遷移")
 	void test03() {
-		// TODO ここに追加
+		// メニューから「機能」を押下
+		webDriver.findElement(By.linkText("機能")).click();
+		// ドロップダウンメニュー内「ヘルプ」を押下
+		webDriver.findElement(By.linkText("ヘルプ")).click();
+		// ヘルプ画面に遷移
+		assertEquals("http://localhost:8080/lms/help", webDriver.getCurrentUrl());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(4)
 	@DisplayName("テスト04 「よくある質問」リンクからよくある質問画面を別タブに開く")
 	void test04() {
-		// TODO ここに追加
+		//元画面を保持
+		String helpTab = webDriver.getWindowHandle();
+		// 「よくある質問」を押下
+		webDriver.findElement(By.linkText("よくある質問")).click();
+
+		//別タブに切り替え
+		for (String handle : webDriver.getWindowHandles()) {
+			if (!handle.equals(helpTab)) {
+				webDriver.switchTo().window(handle);
+				break;
+			}
+		}
+		//よくある質問画面に遷移
+		assertEquals("http://localhost:8080/lms/faq", webDriver.getCurrentUrl());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
+
 	}
 
 	@Test
 	@Order(5)
 	@DisplayName("テスト05 カテゴリ検索で該当カテゴリの検索結果だけ表示")
 	void test05() {
-		// TODO ここに追加
+		//「カテゴリ検索」内の【研修関係】リンクを押下
+		webDriver.findElement(By.linkText("【研修関係】")).click();
+		// 画面スクロール
+		scrollBy("document.body.scrollHeight");
+		// 読み込み待機
+		pageLoadTimeout(5);
+		assertEquals("Q.キャンセル料・途中退校について", webDriver.findElement(By.className("mb10")).getText());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
 	}
 
 	@Test
 	@Order(6)
 	@DisplayName("テスト06 検索結果の質問をクリックしその回答を表示")
 	void test06() {
-		// TODO ここに追加
+		// Q.キャンセル料・途中退校について」を押下し、回答を表示
+		webDriver.findElement(By.className("sorting_1")).click();
+		assertEquals("A. 受講者の退職や解雇等、やむを得ない事情による途中終了に関してなど、事情をお伺いした上で、協議という形を取らせて頂きます。 弊社営業担当までご相談下さい。",
+				webDriver.findElement(By.id("answer-h[${status.index}]")).getText());
+		// エビデンス取得
+		getEvidence(new Object() {
+		});
+
 	}
 
 }
